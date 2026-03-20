@@ -5,22 +5,22 @@
   "hooks": {
     "Notification": [
       {
-        "matcher": "",
+        "matcher": "*",
         "hooks": [
           {
             "type": "command",
-            "command": "jq -r '.message' <<< \"$(cat)\" | xargs -I {} osascript -e 'display notification \"{}\" with title \"Claude Code\" subtitle \"Needs your input\"'"
+            "command": "jq -c '{event: \"Needs input\", message: .message}' > /tmp/claude-notify.pipe"
           }
         ]
       }
     ],
     "Stop": [
       {
-        "matcher": "",
+        "matcher": "*",
         "hooks": [
           {
             "type": "command",
-            "command": "osascript -e 'display notification \"Task finished in '\"$(basename $(pwd))\"'\" with title \"Claude Code\" subtitle \"Done\"'"
+            "command": "echo '{\"event\": \"Done\", \"message\": \"Task finished\"}' > /tmp/claude-notify.pipe"
           }
         ]
       }

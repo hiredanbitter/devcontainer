@@ -44,6 +44,7 @@
   },
   "remoteUser": "node",
   "mounts": [
+    "source=${localEnv:HOME}/claude-notify.pipe,target=/tmp/claude-notify.pipe,type=bind",
     "source=claude-code-bashhistory-${devcontainerId},target=/commandhistory,type=volume",
     "source=claude-code-config-${devcontainerId},target=/home/node/.claude,type=volume",
     "source=project-node-modules,target=${containerWorkspaceFolder}/node_modules,type=volume",
