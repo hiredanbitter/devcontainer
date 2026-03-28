@@ -1,6 +1,30 @@
 {
   "permissions": {
-    "deny": ["Read(./.env)", "Read(./.env.*)"]
+    "allow": [
+      "Bash",
+      "Read",
+      "Write",
+      "Edit",
+      "MultiEdit",
+      "Glob",
+      "Grep",
+      "LS",
+      "WebFetch",
+      "WebSearch"
+    ],
+    "ask": [
+      "Bash(git *)",
+      "Bash(gh *)"
+    ],
+    "deny": [
+      "Read(./.env)", "Read(./.env.*)",
+      "Bash(git push*)",
+      "Bash(git reset --hard*)",
+      "Bash(git clean -fd*)",
+      "Bash(git clean -fdx*)",
+      "Bash(gh pr merge*)",
+      "Bash(gh repo delete*)"
+    ]
   },
   "hooks": {
     "Notification": [

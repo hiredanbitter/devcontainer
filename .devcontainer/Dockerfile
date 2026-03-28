@@ -25,6 +25,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   jq \
   nano \
   vim \
+  redis-server \
   && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Ensure default node user has access to /usr/local/share
@@ -47,6 +48,14 @@ RUN mkdir -p /workspace /home/node/.claude && \
   chown -R node:node /workspace /home/node/.claude
 
 WORKDIR /workspace
+
+# Install ngrok
+RUN curl -sSL https://ngrok-agent.s3.amazonaws.com/ngrok.asc \
+      | tee /etc/apt/trusted.gpg.d/ngrok.asc >/dev/null \
+  && echo "deb https://ngrok-agent.s3.amazonaws.com buster main" \
+      | tee /etc/apt/sources.list.d/ngrok.list \
+  && apt-get update && apt-get install -y ngrok \
+  && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 ARG GIT_DELTA_VERSION=0.18.2
 RUN ARCH=$(dpkg --print-architecture) && \
@@ -78,14 +87,26 @@ RUN sh -c "$(wget -O- https://github.com/deluan/zsh-in-docker/releases/download/
   -a "export PROMPT_COMMAND='history -a' && export HISTFILE=/commandhistory/.bash_history" \
   -x
 
+# RUN echo 'alias c="claude config set apiKey $ANTHROPIC_API_KEY"' >> /home/node/.zshrc
+
 # Install Claude
-RUN npm install -g @anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}
+RUN npm install -g @anthropic-ai/claude-code@${CLAUDE_CODE_VERSION} pnpm@latest-10
 
-
-# Copy and set up firewall script
+# Copy and set up firewall and post-start scripts
 COPY init-firewall.sh /usr/local/bin/
+COPY post-start.sh /usr/local/bin/
+
+# Set up Claude Code API key helper
+RUN mkdir -p /home/node/.claude && \
+    echo '{"apiKeyHelper": "/home/node/.claude/anthropic_key.sh"}' > /home/node/.claude/settings.json && \
+    echo '#!/bin/sh\necho $ANTHROPIC_API_KEY' > /home/node/.claude/anthropic_key.sh && \
+    chmod +x /home/node/.claude/anthropic_key.sh && \
+    chown -R node:node /home/node/.claude
+
 USER root
-RUN chmod +x /usr/local/bin/init-firewall.sh && \
+RUN chmod +x /usr/local/bin/init-firewall.sh /usr/local/bin/post-start.sh && \
   echo "node ALL=(root) NOPASSWD: /usr/local/bin/init-firewall.sh" > /etc/sudoers.d/node-firewall && \
-  chmod 0440 /etc/sudoers.d/node-firewall
+  chmod 0440 /etc/sudoers.d/node-firewall && \
+  echo "node ALL=(root) NOPASSWD: /usr/sbin/service redis-server start" > /etc/sudoers.d/node-redis && \
+  chmod 0440 /etc/sudoers.d/node-redis
 USER node

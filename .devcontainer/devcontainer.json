@@ -12,8 +12,10 @@
   "runArgs": [
     "--cap-add=NET_ADMIN",
     "--cap-add=NET_RAW",
-    "--env-file", "${localWorkspaceFolder}\\.env",
-    "--memory=6g", "--cpus=4"
+    "--env-file",
+    "${localWorkspaceFolder}\\.env",
+    "--memory=6g",
+    "--cpus=4"
   ],
   "customizations": {
     "vscode": {
@@ -44,11 +46,12 @@
   },
   "remoteUser": "node",
   "mounts": [
-    "source=${localEnv:HOME}/claude-notify.pipe,target=/tmp/claude-notify.pipe,type=bind",
+    // "source=${localEnv:HOME}/claude-notify.pipe,target=/tmp/claude-notify.pipe,type=bind",
     "source=claude-code-bashhistory-${devcontainerId},target=/commandhistory,type=volume",
     "source=claude-code-config-${devcontainerId},target=/home/node/.claude,type=volume",
     "source=project-node-modules,target=${containerWorkspaceFolder}/node_modules,type=volume",
-    "source=C:\\r\\me\\realaf-podcast\\The-Book-Of-Andy,target=/workspace/The-Book-Of-Andy,type=bind,consistency=delegated"
+    // "source=C:\\r\\me\\realaf-podcast\\The-Book-Of-Andy,target=/workspace/The-Book-Of-Andy,type=bind,consistency=delegated"
+    "source=C:\\r\\me\\backend-practice-agentfactory,target=/workspace/agentfactory,type=bind,consistency=delegated"
   ],
   "hostRequirements": {
     "cpus": 4,
@@ -58,11 +61,11 @@
   "containerEnv": {
     "NODE_OPTIONS": "--max-old-space-size=4096",
     "CLAUDE_CONFIG_DIR": "/home/node/.claude",
-    "POWERLEVEL9K_DISABLE_GITSTATUS": "true",
-    "ANTHROPIC_API_KEY": "${localEnv:ANTHROPIC_API_KEY}"
+    "POWERLEVEL9K_DISABLE_GITSTATUS": "true"
   },
   "workspaceMount": "source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=delegated",
   "workspaceFolder": "/workspace",
-  "postStartCommand": "sudo /usr/local/bin/init-firewall.sh",
+  // "postStartCommand": "sudo /usr/local/bin/init-firewall.sh && mkdir -p /home/node/.claude && echo '{\"env\":{\"ANTHROPIC_API_KEY\":\"'$ANTHROPIC_API_KEY'\"}}' > /home/node/.claude/settings.json",
+  "postStartCommand": "/usr/local/bin/post-start.sh",
   "waitFor": "postStartCommand"
 }

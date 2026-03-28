@@ -65,6 +65,7 @@ done < <(echo "$gh_ranges" | jq -r '(.web + .api + .git)[]' | aggregate -q)
 
 # Resolve and add other allowed domains
 for domain in \
+    "mcp.linear.app" \
     "registry.npmjs.org" \
     "api.anthropic.com" \
     "sentry.io" \
@@ -72,6 +73,10 @@ for domain in \
     "statsig.com" \
     "marketplace.visualstudio.com" \
     "vscode.blob.core.windows.net" \
+    "api.ngrok.com" \
+    "tunnel.us.ngrok.com" \
+    "crl.ngrok.com" \
+    "connect.us.ngrok-agent.com" \
     "update.code.visualstudio.com"; do
     echo "Resolving $domain..."
     ips=$(dig +noall +answer A "$domain" | awk '$4 == "A" {print $5}')
