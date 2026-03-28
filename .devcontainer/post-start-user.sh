@@ -22,7 +22,9 @@ EOF
 sudo service redis-server start
 
 # npm install -g pnpm@latest-10
+# cd ./devcontainer
+# ./post-start-user.sh
 pnpm install && pnpm dev      # Start webhook server
 # ngrok http 3000 # start grok
 # create linear webhook with grok url
-# cd agentfactory/my-agent && pnpm worker                   # Start local worker (in another terminal)
+# cd agentfactory/my-agent && pnpm worker                   # Start local worker in another terminal
