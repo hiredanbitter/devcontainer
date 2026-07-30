@@ -6,13 +6,14 @@
       "TZ": "${localEnv:TZ:America/Los_Angeles}",
       "CLAUDE_CODE_VERSION": "latest",
       "GIT_DELTA_VERSION": "0.18.2",
-      "ZSH_IN_DOCKER_VERSION": "1.2.0"
+      "ZSH_IN_DOCKER_VERSION": "1.2.0",
+      "JAVA_VERSION": "21"
     }
   },
   "runArgs": [
     "--cap-add=NET_ADMIN",
     "--cap-add=NET_RAW",
-    "--env-file", "${localWorkspaceFolder}\\.env",
+    "--env-file", "${localWorkspaceFolder}/.env",
     "--memory=6g", "--cpus=4"
   ],
   "customizations": {
@@ -44,11 +45,12 @@
   },
   "remoteUser": "node",
   "mounts": [
-    "source=${localEnv:HOME}/claude-notify.pipe,target=/tmp/claude-notify.pipe,type=bind",
+    // "source=${localEnv:HOME}/claude-notify.pipe,target=/tmp/claude-notify.pipe,type=bind",
     "source=claude-code-bashhistory-${devcontainerId},target=/commandhistory,type=volume",
     "source=claude-code-config-${devcontainerId},target=/home/node/.claude,type=volume",
     "source=project-node-modules,target=${containerWorkspaceFolder}/node_modules,type=volume",
-    "source=C:\\r\\me\\realaf-podcast\\The-Book-Of-Andy,target=/workspace/The-Book-Of-Andy,type=bind,consistency=delegated"
+    // "source=C:\\r\\me\\realaf-podcast\\The-Book-Of-Andy,target=/workspace/The-Book-Of-Andy,type=bind,consistency=delegated"
+    "source=/Users/danielbitter/repos/how-long-is-this-train,target=/workspace/how-long-is-this-train,type=bind,consistency=delegated"
   ],
   "hostRequirements": {
     "cpus": 4,

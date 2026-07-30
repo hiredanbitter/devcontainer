@@ -1,0 +1,24 @@
+# Lightweight Python tooling for in-container dataset work + tests.
+#
+# Scope: only what the container actually runs — dataset prep/verification
+# (json_to_dataset.py, prepare_dataset.py, extract_frames.py, box-overlay checks)
+# and the test runner. Pinned to the training VM's versions where it matters so
+# local behavior matches.
+#
+# Deliberately EXCLUDED (do not add here):
+#   - torch/torchvision/torchaudio  -> +cu118 CUDA builds, GPU/VM only (~2.5 GB)
+#   - tensorrt, pycuda              -> Jetson runtime, not pip-installable here
+#   - pyqt5, lxml (labelImg)        -> GUI app, runs on the host, not the container
+#
+# NOTE: opencv is bumped off the VM's 4.5.5.64 pin because the container is
+# Python 3.11 (the VM is 3.9) and 4.5.5.64 has no cp311 wheel. The tooling only
+# uses basic cv2 calls (imread/rectangle/VideoCapture), so the version is not
+# parity-critical; 4.9.0.80 is the nearest stable build with cp311 wheels.
+
+numpy==1.24.4
+opencv-python-headless==4.9.0.80
+pillow==9.5.0
+matplotlib==3.9.4
+PyYAML==6.0.3
+tqdm==4.67.1
+pytest
